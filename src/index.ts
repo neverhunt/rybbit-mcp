@@ -366,7 +366,20 @@ server.registerTool(
     inputSchema: {
       site: siteIdParam,
       ...timeParamsShape,
-      server.tool(
+      filters: filtersParam,
+    },
+  },
+  async ({ site, filters, ...time }) => {
+    try {
+      const data = await client.getSessionLocations(site, { ...time, filters: toFilters(filters) });
+      return textResult(data);
+    } catch (err) {
+      return errorResult(err);
+    }
+  }
+);
+
+  server.tool(
     "get_overview",
     "Get high-level summary (sessions, views, visitors, duration, bounce rate)",
     timeParamsShape,
