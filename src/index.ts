@@ -441,6 +441,12 @@ async function main() {
 
     app.get("/sse", async (req, res) => {
       console.log(`[SSE] New connection from ${req.ip}`);
+      
+      // CRITICAL FIX: Prevent CapRover Nginx from buffering the SSE stream!
+      // If Nginx buffers, the Python client never receives the session ID and times out in 60s.
+      res.setHeader("X-Accel-Buffering", "no");
+      res.setHeader("Cache-Control", "no-cache");
+
       try {
         const transport = new SSEServerTransport("/messages", res);
         console.log(`[SSE] Transport initialized. Session ID: ${transport.sessionId}`);
