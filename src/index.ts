@@ -387,6 +387,18 @@ async function main() {
     
     let transport: SSEServerTransport | null = null;
 
+    app.get("/", (req, res) => {
+      res.send(`
+        <html>
+          <body style="font-family: sans-serif; padding: 2rem; text-align: center;">
+            <h1>✅ Rybbit MCP Server is running!</h1>
+            <p>Your server is successfully deployed.</p>
+            <p>The SSE endpoint for MCP clients is available at: <code>/sse</code></p>
+          </body>
+        </html>
+      `);
+    });
+
     app.get("/sse", async (req, res) => {
       transport = new SSEServerTransport("/messages", res);
       await server.connect(transport);
